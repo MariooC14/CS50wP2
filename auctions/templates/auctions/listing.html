@@ -10,6 +10,7 @@
                 <h1>{{ listing.title }}</h1>
                 <p class="desc">{{ listing.description }}</p>
                 <div>
+                    <p>Status: <strong>{{ listing.active|yesno:"Active, Inactive"}}</strong></p>
                     <p>Listed by: <strong>{{ listing.lister }}</strong></p>
                     <p>Category: <strong>{{ listing.category | title }}</strong></p>
                 </div>
@@ -17,20 +18,22 @@
         </section>
         <hr />
         <section class="listing-bid">
-            <h2>Latest Bid: $100.00</h2>
+            <h2>Latest Bid: ${{ listing.price }}</h2>
+            {% if listing.active %}
             <form action="{% url 'listings' listing_id=listing.id %} " method="POST">
-                <p>2 bid(s) so far</p>
-                <input type="number" placeholder="Bid" autofocus name="bid">
+                {% csrf_token %}
+                <p>{{ bid_count }} bid(s) so far</p>
+                {{ form }}
                 <button class="bid-button">Place Bid</button>
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
             </form>
+            {% else %}
+            <h2 style="text-align:center">Listing is closed. No more bids.</h2>
+            {% endif %}
         </section>
     {% else %}
         Listing not found
     {% endif %}
 {% endblock %}
-
-
-
-{{ listing.price }}
-
-{{ listing.active }}

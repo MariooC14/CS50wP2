@@ -1,11 +1,16 @@
+import pkgutil
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, resolve
+import logging
 
 from .models import User, Listing, Comment, Bid
+from .forms import BidForm
 
+logger = logging.getLogger(__name__)
 
 def index(request):
     listings = Listing.objects.filter(active=True)
@@ -16,21 +21,61 @@ def index(request):
 
 def listing(request, listing_id):
     
-    #TODO Bids Display
-    bids = 0
+    logging.info(listing_id)
+    
+    bid_count = Bid.objects.filter(bid_for=Listing.objects.get(pk=listing_id)).annotate(Count('bid'))
     try:
-        listing = Listing.objects.get(id=listing_id)
+        listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
         return render(request, "auctions/listing.html", {
             "listing": None
         })
+        
+    comments = Comment.objects.filter(comment_for=Listing.objects.get(pk=listing_id))
     
-    comments = Comment.objects.filter(comment_for=Listing.objects.get(id=listing_id))
-    
-    return render(request, "auctions/listing.html", {
-        "listing": listing,
-        "comments": comments,
-        "bids": bids,
+    if request.method == "POST":
+        message = ''
+        form = BidForm(request.POST)
+        if form.is_valid():
+            bid = form.cleaned_data["bid"]
+            try: 
+                highest_bid = Bid.objects.filter(bid_for=Listing.objects.get(pk=listing_id)).latest('bid')
+                logger.info(highest_bid)
+            except Bid.DoesNotExist:
+                highest_bid = Listing.objects.get(
+                    id=Listing.objects.get(pk=listing_id)).price
+            
+            if bid > highest_bid:
+                # Process the bid
+                new_bid = Bid(bidder=request.user, bid=bid, bid_for=Listing.objects.get(pk=listing_id))
+                new_bid.save()
+                
+                listing1 = Listing.objects.get(pk=listing_id)
+                listing1.price = bid
+                listing1.save()
+                message="Success! You have placed your new bid."
+            else:
+                message = "Bid must be higher than the current bid."
+            
+        else:
+            message = "Invalid Bid"
+            
+        listing = Listing.objects.get(pk=listing_id)
+        return render(request, "auctions/listing.html", {
+            "form": BidForm,
+            "listing": listing,
+            "comments": comments,
+            "bid_count": len(bid_count),
+            "message": message,
+        })
+        
+    else:
+        form = BidForm()
+        return render(request, "auctions/listing.html", {
+            "form": BidForm,
+            "listing": listing,
+            "comments": comments,
+            "bid_count": len(bid_count),
     }) 
     
 def login_view(request):
