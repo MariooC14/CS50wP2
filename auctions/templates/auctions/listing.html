@@ -15,8 +15,17 @@
                 </div>
             </div>
         </section>
+        <hr />
+        <section class="listing-bid">
+            <h2>Latest Bid: $100.00</h2>
+            <form action="{% url 'listings' listing_id=listing.id %} " method="POST">
+                <p>2 bid(s) so far</p>
+                <input type="number" placeholder="Bid" autofocus name="bid">
+                <button class="bid-button">Place Bid</button>
+            </form>
+        </section>
     {% else %}
-    Listing not found
+        Listing not found
     {% endif %}
 {% endblock %}
 

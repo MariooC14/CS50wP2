@@ -18,7 +18,13 @@ def listing(request, listing_id):
     
     #TODO Bids Display
     bids = 0
-    listing = Listing.objects.get(id=listing_id)
+    try:
+        listing = Listing.objects.get(id=listing_id)
+    except Listing.DoesNotExist:
+        return render(request, "auctions/listing.html", {
+            "listing": None
+        })
+    
     comments = Comment.objects.filter(comment_for=Listing.objects.get(id=listing_id))
     
     return render(request, "auctions/listing.html", {
@@ -26,7 +32,7 @@ def listing(request, listing_id):
         "comments": comments,
         "bids": bids,
     }) 
-
+    
 def login_view(request):
     if request.method == "POST":
 
