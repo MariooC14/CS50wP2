@@ -1,7 +1,32 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+<main>
     <h2>Active Listings</h2>
-
-    TODO
+    <div class="listings">
+        {% for listing in listings %}
+            <a href="listings/{{ listing.id }}">
+                <div class="listing">
+                    <div class="image">
+                        <img src="../../static/auctions/slave_meme.png">
+                    </div>
+                    <div class="listing-info">
+                        <h1>{{ listing.title }}</h1>
+                        <p class="price"><strong>Price:</strong> 
+                            ${{ listing.price }}</p>
+                        {% if listing.description %}
+                            <p class="desc">{{ listing.description }}</p>
+                        {% endif %}
+                        <p class="date-created">Created {{ listing.date_created }}</p>
+                    </div>
+                </div>  
+            </a>
+            {% empty %}
+            <h3>No listings so far! Click 
+                <a href="#">here</a>
+                to create one.
+            </h3>
+            {% endfor %}
+    </div>
+</main>
 {% endblock %}

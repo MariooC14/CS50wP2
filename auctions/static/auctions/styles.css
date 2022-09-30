@@ -1,3 +1,148 @@
-body {
-    padding: 10px;
+* {
+  box-sizing: border-box;
+  margin: 0;
 }
+
+body {
+  background-color: #202020;
+  font-family: "Karla", sans-serif;
+}
+
+header {
+  background-color: cadetblue;
+  padding: 10px 13px;
+}
+
+.title {
+  text-align: center;
+  color: black;
+  text-decoration: none;
+}
+
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: beige;
+  margin: 0 8px;
+}
+
+a > span {
+  background-color: #202020;
+  color: white;
+  font-size: 0.7rem;
+  border: 1px solid black;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+
+main {
+  margin: 10px;
+  color: white;
+}
+
+.listings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.listing {
+  display: flex;
+  width: 95vw;
+  height: 250px;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 5px 0;
+}
+
+.listings * {
+  text-decoration: none;
+}
+
+.image {
+  width: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image > img {
+  max-height: 240px;
+  max-width: 350px;
+}
+
+.listing-info {
+  padding: 10px;
+  width: 60%;
+}
+
+.listing-info * {
+  color: white;
+}
+
+.listing-info > h1 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.price {
+  margin-bottom: 18px;
+  font-size: 0.8rem;
+}
+
+.desc {
+  margin-bottom: 15px;
+  padding: 5px;
+  border: 1px solid green;
+  width: 100%;
+  background-color: slategray;
+  border-radius: 10px;
+  min-height: 70px;
+  color: darkslategray;
+}
+
+.date-created {
+  font-size: 0.7rem;
+  color: gray;
+}
+
+.listing-page-info {
+  height: 500px;
+  display: flex;
+  margin: 30px;
+}
+.listing-page-info .img {
+  width: 50vw;
+  display: flex;
+  justify-content: center;
+}
+.listing-page-info .img img {
+  max-height: 500px;
+}
+
+.listing-text-info {
+  border: 3px solid black;
+  width: 40vw;
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.listing-text-info * {
+  color: white;
+}
+.listing-text-info h1 {
+  margin-bottom: 20px;
+}
+.listing-text-info .desc {
+  margin-bottom: 50px;
+}
+.listing-text-info div > p, .listing-text-info p > strong {
+  color: gray;
+  margin: 10px;
+}/*# sourceMappingURL=styles.css.map */

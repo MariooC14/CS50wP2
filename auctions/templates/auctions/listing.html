@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if listing %}
+        <section class="listing-page-info">
+            <div class="img">
+                <img src="../../static/auctions/slave_meme.png">
+            </div>
+            <div class="listing-text-info">
+                <h1>{{ listing.title }}</h1>
+                <p class="desc">{{ listing.description }}</p>
+                <div>
+                    <p>Listed by: <strong>{{ listing.lister }}</strong></p>
+                    <p>Category: <strong>{{ listing.category | title }}</strong></p>
+                </div>
+            </div>
+        </section>
+    {% else %}
+    Listing not found
+    {% endif %}
+{% endblock %}
+
+
+
+{{ listing.price }}
+
+{{ listing.active }}
