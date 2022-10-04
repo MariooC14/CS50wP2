@@ -183,3 +183,31 @@ main {
     }
 }
 
+.createListing-form {
+    display: flex;
+    flex-direction: column;
+    margin: 100px;
+    gap: 20px;
+
+    p {
+        input, textarea, select {
+            min-height: 30px;
+            background-color: blanchedalmond;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+    }
+
+    #id_active {
+        vertical-align: middle;
+    }
+}
+
+.create-listing-button {
+    border: none;
+    height: 40px;
+    border-radius: 20px;
+    width: 100px;
+    background-color: aqua;
+}

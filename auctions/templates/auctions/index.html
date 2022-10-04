@@ -8,7 +8,7 @@
             <a href="listings/{{ listing.id }}">
                 <div class="listing">
                     <div class="image">
-                        <img src="../../static/auctions/slave_meme.png">
+                        <img src="{{ listing.photo_url }}">
                     </div>
                     <div class="listing-info">
                         <h1>{{ listing.title }}</h1>
@@ -22,8 +22,9 @@
                 </div>  
             </a>
             {% empty %}
-            <h3>No listings so far! Click 
-                <a href="#">here</a>
+            <h3>
+                No listings so far! Click 
+                    <a href="#">here</a>
                 to create one.
             </h3>
             {% endfor %}

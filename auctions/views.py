@@ -4,10 +4,11 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, resolve
+from django.contrib.auth.decorators import login_required
 import logging
 
 from .models import User, Listing, Comment, Bid
-from .forms import BidForm
+from .forms import BidForm, ListingForm
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,6 +18,7 @@ def index(request):
     return render(request, "auctions/index.html", {
         "listings": listings 
     })
+
 
 def listing(request, listing_id):
     
@@ -80,6 +82,35 @@ def listing(request, listing_id):
             "bid_count": len(bid_count),
     }) 
     
+
+@login_required(login_url='/login')
+def createListing(request):
+    
+    if request.method == "POST":
+        # Get Form
+        form = ListingForm(request.POST)
+        
+        # Validate Form
+        if form.is_valid():
+            
+            form = form.cleaned_data
+            new_listing = Listing(title=form['title'],
+                                description=form['description'],
+                                price=form["price"],
+                                photo_url=form['photo_url'],
+                                lister=request.user,
+                                active=form['active'])
+            new_listing.save()
+
+            return HttpResponseRedirect(reverse('index'))
+        
+    else:
+        return render(request, "auctions/create_listing.html", {
+            'form': ListingForm
+        })
+       
+        
+
 def login_view(request):
     if request.method == "POST":
 
