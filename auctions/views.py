@@ -75,7 +75,7 @@ def listing(request, listing_id):
         form = BidForm()
         return render(request, "auctions/listing.html", {
             "form": BidForm,
-            "listing": listing,
+            "listing": current_listing,
             "comments": comments,
             "bid_count": len(bid_count),
     }) 
