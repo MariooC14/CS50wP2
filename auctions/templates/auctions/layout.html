@@ -18,11 +18,11 @@
 
                     {% if user.is_authenticated %}
                         <a class="nav-link" href="#">Categories</a>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'watchlist' %}">
                             Watchlist
-                            {% if listing_count %}
+                            {% if watchlist_count %}
                                 <span>
-                                    {{ listing_count }}
+                                    {{ watchlist_count }}
                                 </span>
                             {% endif %}
                         </a>

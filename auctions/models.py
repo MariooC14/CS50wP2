@@ -1,5 +1,3 @@
-from distutils.command.upload import upload
-from queue import Empty
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from .listing_categories import LISTING_CATEGORIES
@@ -7,15 +5,9 @@ from .listing_categories import LISTING_CATEGORIES
 # One Model per SQL Table
 
 # MODELS:
-"""
-    Users (Done)
-    Listings
-    Bids
-    Comments on listings (On the page for each listing, not index)
-"""
-
 class User(AbstractUser):
     pass
+
 
 class Listing(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -25,18 +17,18 @@ class Listing(models.Model):
     photo_url = models.URLField(max_length=100, blank=True)
     # The field below uses the User's Primary key to as its own key.
     lister = models.ForeignKey(User, on_delete=models.CASCADE)
+    winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='winner')
     date_created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
     
-    def __str__(self):
-        return f"'{self.title}' from {self.lister}"
-    
-    # TODO
     category = models.CharField(choices=LISTING_CATEGORIES,
                                 max_length=12,
                                 default="NONE")
-    
-# TODO PUT 2 FOREIGN KEYS
+
+    def __str__(self):
+        return f"'{self.title}' from {self.lister}"
+ 
+
 class Bid(models.Model):
     bid_id = models.AutoField(primary_key=True)
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -45,14 +37,15 @@ class Bid(models.Model):
     
     def __str__(self):
         return f"{self.bid} for {self.bid_for} placed by {self.bidder}"
-    
-# TODO ASSIGN KEYS FOR 1. LISTING FOR and 2. Commented by 
+
+class Watchlist(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    watched_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, related_name="listing", on_delete=models.CASCADE)
+
+
+
 class Comment(models.Model) :
     id = models.AutoField(primary_key=True)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    commenter = models.ForeignKey(User, on_delete=models.CASCADE)
     comment_for = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    
-"""
-class WatchList(models.Model):
-    ManyToMany shit or smtn
-""" 

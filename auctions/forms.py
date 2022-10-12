@@ -37,5 +37,3 @@ class ListingForm(forms.Form):
                                widget=forms.URLInput(attrs={
                                    'placeholder': "Photo URL (Optional)"
                                }))
-    
-    active = forms.BooleanField(required=False)
