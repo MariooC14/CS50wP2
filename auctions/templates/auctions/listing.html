@@ -26,35 +26,62 @@
             <h2>Latest Bid: ${{ listing.price }}</h2>
 
             {% if user != listing.lister %}
+
                 {% if listing.active %}
                     <form action="{% url 'listings' listing_id=listing.id %} " method="POST">
                         {% csrf_token %}
                         <p>{{ bid_count }} bid(s) so far</p>
                         {{ form }}
                         <button class="bid-button">Place Bid</button>
+
                         {% if message %}
                             <p>{{ message }}</p>
                         {% endif %}
+
                     </form>
+
                 {% else %}
                 <h2 style="text-align:center">Listing is closed. No more bids.</h2>
+
                     {% if listing.winner == user %}
+
                         <h2 style="text-align:center">You won the auction!</h2>
+
                     {% endif %}
+
                 {% endif %}
+            
             {% else %}
-                    {% if listing.active %}
-                        <!-- If the user is the lister, show end button -->
-                        <a class="close--listing--button" href="{% url 'closeListing' listing_id=listing.id %}">Close Listing</a>
-                    {% endif %}
+
+                {% if listing.active %}
+                    <!-- If the user is the lister, show end button -->
+                    <a class="close--listing--button" href="{% url 'closeListing' listing_id=listing.id %}">Close Listing</a>
+                {% endif %}
+
             {% endif %}
         </section>
+        <hr />
+        <section class="comments--section">
+            <h1>Comments</h1>
+            <form action="{% url 'createComment' %}">
+                {% csrf_token %}
+                {{ comment_form }}
+            </form>
+            <div class="comments">
+                {% for comment in comments %}
+                    <h3>{{ comment.commenter }}</h3>
+                    <div class="comment">{{ comment.comment }} </div>
+                    <p>Commented on {{ comment.date }}</p> 
 
-        <section>
-            Comments
+                {% empty %}
+                    No comments yet.
+                {% endfor %}
+                
+            </div>
         </section>
 
     {% else %}
         Listing not found
     {% endif %}
+
 {% endblock %}

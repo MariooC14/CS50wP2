@@ -227,3 +227,23 @@ main {
     padding: 10px;
     border-radius: 20px;
 }
+
+.comments--section {
+    padding: 20px;
+}
+
+.comments {
+    padding: 10px 30px;
+    
+    h3 {
+        opacity: 0.7;
+    }
+    p {
+        font-size: 0.7rem;
+        color:gray;
+    }
+}
+
+.comment {
+    margin: 20px;
+}

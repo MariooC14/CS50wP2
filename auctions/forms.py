@@ -6,6 +6,9 @@ class BidForm(forms.Form):
     bid = forms.DecimalField(required=True, max_digits=9, decimal_places=2)
     
 class ListingForm(forms.Form):
+
+
+
     title = forms.CharField(
                             required=True, 
                             max_length=30, 
@@ -37,3 +40,12 @@ class ListingForm(forms.Form):
                                widget=forms.URLInput(attrs={
                                    'placeholder': "Photo URL (Optional)"
                                }))
+
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(required=True,
+                              max_length=300,
+                              min_length=20,
+                              widget=forms.TextInput(attrs={
+                                'placeholder': 'Comment',
+                              }))                         

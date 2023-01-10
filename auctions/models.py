@@ -55,3 +55,10 @@ class Comment(models.Model) :
     id = models.AutoField(primary_key=True)
     commenter = models.ForeignKey(User, on_delete=models.CASCADE)
     comment_for = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    comment = models.TextField(null=True,
+                               blank=False,
+                               max_length=500)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.commenter}'s comment for {self.comment_for}"

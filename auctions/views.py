@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 import logging
 
 from .models import User, Listing, Comment, Bid, Watchlist
-from .forms import BidForm, ListingForm
+from .forms import BidForm, ListingForm, CommentForm
 
 logging.basicConfig(level=logging.INFO)
 
@@ -74,9 +74,10 @@ def listing(request, listing_id):
             "form": BidForm,
             "listing": current_listing,
             "comments": comments,
+            "comment_form": CommentForm,
             "bid_count": len(bid_count),
             "message": message,
-            "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count()
+            "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count(),
         })
         
     else:
@@ -85,6 +86,7 @@ def listing(request, listing_id):
             "form": BidForm,
             "listing": current_listing,
             "comments": comments,
+            "comment_form": CommentForm,
             "bid_count": len(bid_count),
             "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count(),
     }) 
@@ -207,3 +209,25 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+@login_required(login_url='/login')
+def createComment(request):
+    form = CommentForm(request.POST)
+
+    if form.is_valid():
+
+        form = form.cleaned_data
+
+        """
+        TODO:
+            Make Comment form on listing page so that new comment is registered, with the following properties:
+                * commenter
+                * the item for which the user commented
+                * the comment itself
+                (The time and date of when the comment was posted is automatically added in the DB)
+
+            The comment being posted should not redirect the user to another page.
+        """
+        new_comment = Comment(
+                       comment=form['comment'],
+        )
