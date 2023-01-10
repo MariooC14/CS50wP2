@@ -45,7 +45,7 @@
             {% else %}
                     {% if listing.active %}
                         <!-- If the user is the lister, show end button -->
-                        <a href="{% url 'closeListing' listing_id=listing.id %}">Close Listing</a>
+                        <a class="close--listing--button" href="{% url 'closeListing' listing_id=listing.id %}">Close Listing</a>
                     {% endif %}
             {% endif %}
         </section>

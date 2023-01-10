@@ -7,10 +7,13 @@
         {% for listing in listings %}
             <a href="listings/{{ listing.id }}">
                 <div class="listing">
+
                     <div class="image">
                         <img src="{{ listing.photo_url }}">
                     </div>
+
                     <div class="listing-info">
+
                         <h1>{{ listing.title }}</h1>
                         <p class="price"><strong>Price:</strong> 
                             ${{ listing.price }}</p>
@@ -18,7 +21,9 @@
                             <p class="desc">{{ listing.description }}</p>
                         {% endif %}
                         <p class="date-created">Created {{ listing.date_created }}</p>
+
                     </div>
+                    
                 </div>  
             </a>
             {% empty %}

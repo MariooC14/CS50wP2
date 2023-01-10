@@ -14,10 +14,16 @@ class Listing(models.Model):
     title = models.CharField(max_length=30, blank=False)
     description = models.TextField(max_length=500, blank=True)
     price = models.DecimalField(default=10, decimal_places=2, max_digits=10)
-    photo_url = models.URLField(max_length=100, blank=True)
+    photo_url = models.URLField(max_length=150, blank=True)
     # The field below uses the User's Primary key to as its own key.
-    lister = models.ForeignKey(User, on_delete=models.CASCADE)
-    winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='winner')
+    lister = models.ForeignKey(User, 
+                               on_delete=models.CASCADE)
+
+    winner = models.ForeignKey(User,
+                               on_delete=models.SET_NULL, 
+                               null=True, 
+                               blank=True, 
+                               related_name='winner')
     date_created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
     

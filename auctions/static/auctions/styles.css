@@ -71,8 +71,9 @@ main {
 }
 
 .image > img {
-  max-height: 240px;
-  max-width: 350px;
+  max-height: 220px;
+  max-width: 320px;
+  border-radius: 10px;
 }
 
 .listing-info {
@@ -123,6 +124,7 @@ main {
 }
 .listing-page-info .img img {
   max-height: 500px;
+  border-radius: 20px;
 }
 
 .listing-text-info {
@@ -159,12 +161,13 @@ main {
   height: 30px;
   font-size: large;
   background-color: darkgrey;
-  -moz-appearance: textfield;
 }
 .listing-bid button {
-  height: 45px;
+  height: 40px;
   vertical-align: middle;
-  background-color: dodgerblue;
+  background-color: cadetblue;
+  color: white;
+  padding: 10px;
   border: none;
   border-radius: 15px;
   margin: 0 10px;
@@ -197,4 +200,12 @@ main {
   border-radius: 20px;
   width: 100px;
   background-color: aqua;
+}
+
+.close--listing--button {
+  text-decoration: none;
+  background-color: cadetblue;
+  color: white;
+  padding: 10px;
+  border-radius: 20px;
 }/*# sourceMappingURL=styles.css.map */
