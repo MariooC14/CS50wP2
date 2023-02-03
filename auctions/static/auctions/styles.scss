@@ -35,6 +35,7 @@ a > span {
     color:white;
     font-size: 0.7rem;
     border: 1px solid black;
+    padding: 1px;
     vertical-align: middle;
     border-radius: 3px;
 }
@@ -64,7 +65,8 @@ main {
 }
 
 .image {
-    width: 350px;
+    width: 400px;
+    max-width: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,7 +123,7 @@ main {
     margin-bottom: 50px;
 
     .img {
-        width: 50vw;
+        width: 50%;
         display: flex;
         justify-content: center;
         img {
@@ -244,6 +246,31 @@ main {
     }
 }
 
+.comment--box {
+    border-radius: 20px;
+    border: 1px solid gray;
+    padding: 30px;
+    margin: 20px 0;
+}
+
 .comment {
     margin: 20px;
+}
+
+.watchlist--form {
+    position: absolute;
+    top: 10%;
+    left: 5%;
+
+    button {
+        height: 30px;
+        vertical-align: middle;
+        background-color: gray;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 15px;
+        margin: 0 10px;
+        cursor: pointer;
+    }
 }

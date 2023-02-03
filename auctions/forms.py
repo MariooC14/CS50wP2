@@ -6,9 +6,6 @@ class BidForm(forms.Form):
     bid = forms.DecimalField(required=True, max_digits=9, decimal_places=2)
     
 class ListingForm(forms.Form):
-
-
-
     title = forms.CharField(
                             required=True, 
                             max_length=30, 
@@ -45,7 +42,12 @@ class ListingForm(forms.Form):
 class CommentForm(forms.Form):
     comment = forms.CharField(required=True,
                               max_length=300,
-                              min_length=20,
+                              min_length=5,
                               widget=forms.TextInput(attrs={
                                 'placeholder': 'Comment',
-                              }))                         
+                              }))
+    listing_id = forms.CharField(widget=forms.HiddenInput)
+
+
+class WatchlistForm(forms.Form):
+    listing_id = forms.CharField(widget=forms.HiddenInput)

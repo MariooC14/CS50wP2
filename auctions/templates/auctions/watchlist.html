@@ -3,9 +3,31 @@
 {% block body %}
     <main>
         <h1>Watchlist</h1>
-        {% for listing in watchlist %}
-        <!-- TODO -->
-            {{ listing.title }}
-        {% endfor %}
+        <div class="listings">
+            {% for listing in watchlist %}
+                <a href="listings/{{ listing.id }}">
+                    <div class="listing">
+                
+                        <div class="image">
+                            <img src="{{ listing.photo_url }}">
+                        </div>
+                
+                        <div class="listing-info">
+                
+                            <h1>{{ listing.title }}</h1>
+                            <p class="price"><strong>Price:</strong>
+                                ${{ listing.price }}</p>
+                            {% if listing.description %}
+                            <p class="desc">{{ listing.description }}</p>
+                            {% endif %}
+                            <p class="date-created">Created {{ listing.date_created }}</p>
+                
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <h3>You are not watching any listings!</h3>
+            {% endfor %}
+    </div>
     </main>
 {% endblock %}

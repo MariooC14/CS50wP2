@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 import logging
 
 from .models import User, Listing, Comment, Bid, Watchlist
-from .forms import BidForm, ListingForm, CommentForm
+from .forms import BidForm, ListingForm, CommentForm, WatchlistForm
 
 logging.basicConfig(level=logging.INFO)
 
@@ -34,9 +34,16 @@ def listing(request, listing_id):
             "listing": None,
             "watchlist_count": watchlist_count 
         })
+    
+    is_watched = True if Watchlist.objects.filter(
+        watched_by=request.user, 
+        listing=current_listing) else False
         
-    # Fetch comments
+    # Fetch comments and initialise comment_form
     comments = Comment.objects.filter(comment_for=Listing.objects.get(pk=listing_id))
+    comment_form = CommentForm(initial={"listing_id": listing_id})
+    
+    watchlist_form = WatchlistForm(initial={"listing_id": listing_id})
     
     if request.method == "POST":
         
@@ -74,10 +81,12 @@ def listing(request, listing_id):
             "form": BidForm,
             "listing": current_listing,
             "comments": comments,
-            "comment_form": CommentForm,
+            "comment_form": comment_form,
             "bid_count": len(bid_count),
+            "is_watched": is_watched,
             "message": message,
             "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count(),
+            "watchlist_form": watchlist_form,
         })
         
     else:
@@ -86,9 +95,11 @@ def listing(request, listing_id):
             "form": BidForm,
             "listing": current_listing,
             "comments": comments,
-            "comment_form": CommentForm,
+            "comment_form": comment_form,
             "bid_count": len(bid_count),
+            "is_watched": is_watched,
             "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count(),
+            "watchlist_form": watchlist_form,
     }) 
     
 
@@ -125,6 +136,7 @@ def closeListing(request, listing_id):
     if request.method == "GET":
         try:
             current_listing = Listing.objects.get(pk=listing_id)
+            logging.info("Checking for listing")
         except Listing.DoesNotExist:
             return HttpResponseRedirect('')
         
@@ -134,6 +146,7 @@ def closeListing(request, listing_id):
         else:
             
             current_listing.active = False
+            current_listing.save()
             
             try:
                 highest_bidder = Bid.objects.filter(bid_for=current_listing).latest('bid').bidder
@@ -145,19 +158,54 @@ def closeListing(request, listing_id):
             current_listing.save()
             return redirect(f'/listings/{listing_id}')   
 
+"""
+TODO: Make Categories page."""
 @login_required(login_url='/login')
 def watchlist(request):
+
     # Get ids of the listings watched by the user
     watchlist_pks = Watchlist.objects.filter(watched_by=request.user).values_list('listing', flat=True)
     if watchlist_pks:
         # Get listings whose id are IN the watchlist id list.
         listings = Listing.objects.filter(id__in=watchlist_pks)
     
+
     return render(request, "auctions/watchlist.html", {
         "watchlist": listings,
         "watchlist_count": len(listings),
     })
     
+@login_required(login_url="/login")
+def toggleWatchlist(request):
+
+    if request.method == "POST":
+
+        form = WatchlistForm(request.POST)
+
+        if form.is_valid():
+            form = form.cleaned_data
+
+            user = request.user
+
+            listing = Listing.objects.get(id=form["listing_id"])
+
+            # If the item is not in the database as a watched item by the user, create an entry
+            try:
+                is_watching = Watchlist.objects.get(listing=listing, watched_by=user)
+            except Watchlist.DoesNotExist:
+                is_watching = False
+
+            if is_watching:
+                is_watching.delete()
+            else:
+                watchlist_listing = Watchlist(listing=listing, watched_by=user)
+                watchlist_listing.save()
+
+            return redirect(f"/listings/{form['listing_id']}")
+
+    else:
+        return render(request, "auctions/error.html")
+        
 
 def login_view(request):
     if request.method == "POST":
@@ -213,21 +261,19 @@ def register(request):
 @login_required(login_url='/login')
 def createComment(request):
     form = CommentForm(request.POST)
+    logging.info(form)
 
     if form.is_valid():
-
+    
         form = form.cleaned_data
 
-        """
-        TODO:
-            Make Comment form on listing page so that new comment is registered, with the following properties:
-                * commenter
-                * the item for which the user commented
-                * the comment itself
-                (The time and date of when the comment was posted is automatically added in the DB)
-
-            The comment being posted should not redirect the user to another page.
-        """
+        listing_id = form['listing_id']
         new_comment = Comment(
                        comment=form['comment'],
+                       commenter= request.user,
+                       comment_for = Listing.objects.get(pk=listing_id),
         )
+        new_comment.save()
+
+        return redirect(f"/listings/{listing_id}")
+    

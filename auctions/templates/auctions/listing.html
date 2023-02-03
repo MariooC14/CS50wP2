@@ -4,6 +4,17 @@
     {% if listing %}
 
         <section class="listing-page-info">
+            <form action="{% url 'toggleWatchlist' %}" method="POST" class="watchlist--form">
+                {% csrf_token %}
+                {{ watchlist_form }}
+                <button class="watchlist--button">
+                    {% if not is_watched %}
+                        Watch
+                    {% else %}
+                        Unwatch
+                    {% endif %}
+                </button>
+            </form>
             <div class="img">
                 <img src="{{ listing.photo_url }}">
             </div>
@@ -60,18 +71,26 @@
 
             {% endif %}
         </section>
+
         <hr />
         <section class="comments--section">
             <h1>Comments</h1>
-            <form action="{% url 'createComment' %}">
+
+            <form action="{% url 'createComment' %}" method="POST">
                 {% csrf_token %}
                 {{ comment_form }}
+                <button class="bid-button">Place comment</button>
             </form>
+
             <div class="comments">
                 {% for comment in comments %}
-                    <h3>{{ comment.commenter }}</h3>
-                    <div class="comment">{{ comment.comment }} </div>
-                    <p>Commented on {{ comment.date }}</p> 
+                    <div class="comment--box">
+
+                        <h3>{{ comment.commenter }}</h3>
+                        <div class="comment">{{ comment.comment }} </div>
+                        <p>Commented on {{ comment.date }}</p> 
+
+                    </div>
 
                 {% empty %}
                     No comments yet.

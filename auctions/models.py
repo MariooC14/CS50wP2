@@ -32,7 +32,7 @@ class Listing(models.Model):
                                 default="NONE")
 
     def __str__(self):
-        return f"'{self.title}' from {self.lister}"
+        return f"'{self.title}' created by {self.lister}"
  
 
 class Bid(models.Model):
@@ -49,6 +49,8 @@ class Watchlist(models.Model):
     watched_by = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, related_name="listing", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"'{self.listing}' watched by {self.watched_by}"
 
 
 class Comment(models.Model) :
@@ -61,4 +63,4 @@ class Comment(models.Model) :
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.commenter}'s comment for {self.comment_for}"
+        return f"Comment for {self.comment_for}"
