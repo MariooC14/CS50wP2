@@ -34,6 +34,7 @@ class ListingForm(forms.Form):
     
     photo_url = forms.URLField(label='',
                                required=False,
+                               max_length=160,
                                widget=forms.URLInput(attrs={
                                    'placeholder': "Photo URL (Optional)"
                                }))

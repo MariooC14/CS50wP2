@@ -1,9 +1,16 @@
 {% extends "auctions/layout.html" %}
-
+<!-- TODO: Make the page so it shows the things if the user is signed in. 
+    User must be logged in for the following:
+        * Add to watchlist
+        * Place bid
+        * close listing if the user owns it
+        * See if they won that listing
+        * Comment -->
 {% block body %}
     {% if listing %}
 
         <section class="listing-page-info">
+            {% if user.is_authenticated %}
             <form action="{% url 'toggleWatchlist' %}" method="POST" class="watchlist--form">
                 {% csrf_token %}
                 {{ watchlist_form }}
@@ -15,6 +22,7 @@
                     {% endif %}
                 </button>
             </form>
+            {% endif %}
             <div class="img">
                 <img src="{{ listing.photo_url }}">
             </div>
@@ -35,24 +43,26 @@
 
         <section class="listing-bid">
             <h2>Latest Bid: ${{ listing.price }}</h2>
-
+            
             {% if user != listing.lister %}
 
                 {% if listing.active %}
+                    {% if user.is_authenticated %}
                     <form action="{% url 'listings' listing_id=listing.id %} " method="POST">
                         {% csrf_token %}
                         <p>{{ bid_count }} bid(s) so far</p>
                         {{ form }}
-                        <button class="bid-button">Place Bid</button>
-
+                        
+                            <button class="bid-button">Place Bid</button>
+                       
                         {% if message %}
                             <p>{{ message }}</p>
                         {% endif %}
 
                     </form>
-
+                    {% endif %}
                 {% else %}
-                <h2 style="text-align:center">Listing is closed. No more bids.</h2>
+                    <h2 style="text-align:center">Listing is closed. No more bids.</h2>
 
                     {% if listing.winner == user %}
 
@@ -76,12 +86,13 @@
         <section class="comments--section">
             <h1>Comments</h1>
 
+            {% if user.is_authenticated %}
             <form action="{% url 'createComment' %}" method="POST">
                 {% csrf_token %}
                 {{ comment_form }}
                 <button class="bid-button">Place comment</button>
             </form>
-
+            {% endif %}
             <div class="comments">
                 {% for comment in comments %}
                     <div class="comment--box">

@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import logging
+from .listing_categories import LISTING_CATEGORIES
 
 from .models import User, Listing, Comment, Bid, Watchlist
 from .forms import BidForm, ListingForm, CommentForm, WatchlistForm
@@ -13,6 +14,7 @@ from .forms import BidForm, ListingForm, CommentForm, WatchlistForm
 logging.basicConfig(level=logging.INFO)
 
 def index(request):
+
     listings = Listing.objects.filter(active=True)
     
     return render(request, "auctions/index.html", {
@@ -20,13 +22,39 @@ def index(request):
         "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count() if request.user.is_authenticated else None,
     })
 
-@login_required(login_url="/login")
+
+def listingsByCategories(request):
+
+    if request.method == "GET":
+        # LISTING_CATEGORIES is a list, where each item is a list of the category in uppercase and Title case. We are only getting the Title Case for each
+        categories = [category[1] for category in LISTING_CATEGORIES]
+        categories.insert(0, "Any")
+
+        # categories are stored in the server in uppercase.
+        chosen_category = request.GET.get('category', '').upper()
+        logging.info(chosen_category)
+
+        #None means no filter
+        if chosen_category == "ANY" or not chosen_category:
+            listings = Listing.objects.filter(active=True)
+        else:
+            listings = Listing.objects.filter(active=True, category=chosen_category)
+        return render(request, "auctions/listingsByCategory.html",{
+            "categories": categories,
+            "listings": listings,
+        })
+
+
+
+# @login_required(login_url="/login")
 def listing(request, listing_id):
     
     bid_count = Bid.objects.filter(bid_for=Listing.objects.get(pk=listing_id)).annotate(Count('bid'))
-    
-    watchlist_count = Watchlist.objects.filter(watched_by=request.user).count()
-    
+    try:
+        watchlist_count = Watchlist.objects.filter(watched_by=request.user).count()
+    except:
+        watchlist_count = 0
+
     try:
         current_listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
@@ -34,10 +62,12 @@ def listing(request, listing_id):
             "listing": None,
             "watchlist_count": watchlist_count 
         })
-    
-    is_watched = True if Watchlist.objects.filter(
-        watched_by=request.user, 
-        listing=current_listing) else False
+    try: 
+        is_watched = True if Watchlist.objects.filter(
+            watched_by=request.user, 
+            listing=current_listing) else False
+    except:
+        is_watched = False
         
     # Fetch comments and initialise comment_form
     comments = Comment.objects.filter(comment_for=Listing.objects.get(pk=listing_id))
@@ -85,7 +115,7 @@ def listing(request, listing_id):
             "bid_count": len(bid_count),
             "is_watched": is_watched,
             "message": message,
-            "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count(),
+            "watchlist_count": watchlist_count,
             "watchlist_form": watchlist_form,
         })
         
@@ -98,14 +128,14 @@ def listing(request, listing_id):
             "comment_form": comment_form,
             "bid_count": len(bid_count),
             "is_watched": is_watched,
-            "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count(),
+            "watchlist_count": watchlist_count,
             "watchlist_form": watchlist_form,
     }) 
     
 
 @login_required(login_url='/login')
 def createListing(request):
-    
+    watchlist_count = Watchlist.objects.filter(watched_by=request.user).count()
     if request.method == "POST":
         # Get Form
         form = ListingForm(request.POST)
@@ -123,10 +153,17 @@ def createListing(request):
 
             return HttpResponseRedirect(reverse('index'))
         
+        else:
+            return render(request, "auctions/create_listing.html", {
+                'form': form,
+                'error': "One of the fields are invalid.",
+                'watchlist_count': watchlist_count
+            })
+        
     else:
         return render(request, "auctions/create_listing.html", {
             'form': ListingForm,
-            "watchlist_count": Watchlist.objects.filter(watched_by=request.user).count(),
+            "watchlist_count": watchlist_count,
         })
 
 

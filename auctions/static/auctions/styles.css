@@ -256,4 +256,22 @@ main {
   border-radius: 15px;
   margin: 0 10px;
   cursor: pointer;
+}
+
+.category--selection--panel {
+  margin: 10px;
+  padding: 10px;
+}
+.category--selection--panel a {
+  text-decoration: none;
+  color: black;
+  background: cadetblue;
+  margin: 0 10px;
+  padding: 10px 20px;
+  min-height: 50px;
+  border-radius: 20px;
+}
+
+.categories--title {
+  margin: 10px 20px;
 }/*# sourceMappingURL=styles.css.map */

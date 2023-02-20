@@ -10,6 +10,7 @@ urlpatterns = [
     path("createComment", views.createComment, name="createComment"),
     path("createListing", views.createListing, name="createListing"),
     path("listings/<int:listing_id>", views.listing, name="listings"),
+    path("listingsByCategories", views.listingsByCategories, name="listingsByCategories"),
     path("closeListing/<int:listing_id>", views.closeListing, name="closeListing"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
