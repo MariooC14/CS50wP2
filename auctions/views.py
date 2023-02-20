@@ -147,6 +147,7 @@ def createListing(request):
             new_listing = Listing(title=form['title'],
                                 description=form['description'],
                                 price=form["price"],
+                                category=form["category"],
                                 photo_url=form['photo_url'],
                                 lister=request.user)
             new_listing.save()
@@ -195,8 +196,7 @@ def closeListing(request, listing_id):
             current_listing.save()
             return redirect(f'/listings/{listing_id}')   
 
-"""
-TODO: Make Categories page."""
+
 @login_required(login_url='/login')
 def watchlist(request):
 
@@ -205,13 +205,15 @@ def watchlist(request):
     if watchlist_pks:
         # Get listings whose id are IN the watchlist id list.
         listings = Listing.objects.filter(id__in=watchlist_pks)
-    
+    else:
+        listings = {}
 
     return render(request, "auctions/watchlist.html", {
         "watchlist": listings,
         "watchlist_count": len(listings),
     })
     
+
 @login_required(login_url="/login")
 def toggleWatchlist(request):
 
